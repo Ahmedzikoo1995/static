@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
     :root{
       --bg:#07080f; --fg:#f7f7ff; --muted:#b2b8c6; --card:rgba(16,18,26,.85); --line:#24283b; --accent:#b388ff; --accent2:#ff5fa2;
@@ -17,7 +18,7 @@
     html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial;scroll-behavior:smooth;}
     a{color:inherit;text-decoration:none}
 
-    /* ======== BACKGROUND (no black overlay) ======== */
+    /* ===== BACKGROUND (no overlay/black box) ===== */
     .background-container{position:fixed;inset:0;z-index:-1;overflow:hidden}
     .scene{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;background-size:cover;background-position:center;background-repeat:no-repeat}
     .scene.active{opacity:1}
@@ -32,10 +33,10 @@
     .sunset-particle{background:#ffaa5f;box-shadow:0 0 8px #ffaa5f}
     .cyber-particle{background:#00ff88;box-shadow:0 0 12px #00ff88}
 
-    /* ======== MAIN ======== */
+    /* ===== MAIN ===== */
     .main-content{position:relative;z-index:1;min-height:100vh}
 
-    /* ======== HEADER (transparent at top) ======== */
+    /* ===== HEADER ===== */
     header{position:sticky;top:0;z-index:20;background:transparent;backdrop-filter:saturate(140%) blur(6px);transition:background .3s ease, box-shadow .3s ease}
     header.scrolled{background:rgba(7,8,15,.75);box-shadow:0 5px 20px rgba(0,0,0,.3)}
     .container{max-width:1200px;margin:0 auto;padding:0 20px}
@@ -50,7 +51,7 @@
     .btn{border:1px solid var(--line);background:var(--card);color:#fff;padding:10px 14px;border-radius:14px;cursor:pointer;transition:all .3s ease}
     .btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,0,0,.3)}
 
-    /* ======== HERO ======== */
+    /* ===== HERO ===== */
     #hero{min-height:100vh;display:grid;place-items:center;animation:fadeIn 1.2s ease;padding:20px 0}
     .grid{display:grid;gap:22px;grid-template-columns:1.1fr .9fr}
     @media (max-width:1000px){.grid{grid-template-columns:1fr}}
@@ -58,20 +59,22 @@
     .title{font-size:clamp(36px,5vw,66px);margin:8px 0 6px;animation:slideUp 1s ease}
     .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .3s ease, box-shadow .3s ease;animation:fadeInUp .8s ease;perspective:1000px}
 
-    /* ======== TERMINAL ======== */
+    /* ===== TERMINAL ===== */
     .code-terminal{font-family:'JetBrains Mono',monospace;background:rgba(0,10,20,.8);padding:20px;border-radius:10px;border:1px solid var(--line);margin:15px 0;position:relative;overflow:hidden}
     .terminal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--line)}
     .terminal-title{color:var(--accent);font-weight:600;display:flex;align-items:center;gap:8px}
     .terminal-buttons{display:flex;gap:6px}
     .terminal-btn{width:12px;height:12px;border-radius:50%}
     .close{background:#ff5f57}.minimize{background:#ffbd2e}.maximize{background:#28ca42}
-    .code-line{margin:8px 0;white-space:pre-wrap;opacity:0}
+
+    /* IMPORTANT: visible by default so you never see blank boxes */
+    .code-line{margin:8px 0;white-space:pre-wrap;opacity:1}
     .typed-cursor{display:inline-block;width:10px;margin-left:3px;animation:blink 1s infinite}
     .prompt{color:var(--accent2);margin-right:10px}
     .command{color:var(--fg)}
     .output{color:#82aaff;margin-left:20px}
 
-    /* ======== EXPERIENCE/SECTIONS ======== */
+    /* ===== SECTIONS ===== */
     section{padding:80px 0;border-top:1px solid var(--line)}
     h2{margin:0 0 14px;position:relative;display:inline-block}
     h2:after{content:'';position:absolute;bottom:-5px;left:0;width:50px;height:3px;background:linear-gradient(to right, var(--accent), var(--accent2));border-radius:3px}
@@ -85,16 +88,16 @@
     .contact-link{display:flex;align-items:center;gap:8px;padding:10px 15px;background:var(--card);border-radius:10px;border:1px solid var(--line);transition:all .3s ease}
     .contact-link:hover{background:rgba(179,136,255,.1);transform:translateY(-3px)}
 
-    /* ======== AVATAR + EYES ======== */
+    /* ===== AVATAR + EYES ===== */
     .avatar-wrap{position:relative;width:100%;max-width:360px;margin:0 auto;transform-style:preserve-3d}
     .avatar-img{display:block;width:100%;border-radius:18px;will-change:transform}
     .eyes-overlay{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
-    .pupil{position:absolute;width:var(--pupil-size,10px);height:var(--pupil-size,10px);border-radius:50%;background:rgba(20,20,20,.9);box-shadow:0 0 2px rgba(0,0,0,.6)}
-    /* Guess positions (percent of image) — adjust later if needed */
+    .pupil{position:absolute;width:var(--pupil-size,12px);height:var(--pupil-size,12px);border-radius:50%;background:rgba(20,20,20,.9);box-shadow:0 0 2px rgba(0,0,0,.6)}
+    /* Guess: eye centers */
     .pupil.left{left:42%;top:44%}
     .pupil.right{left:58%;top:44%}
 
-    /* ======== ANIMATIONS ======== */
+    /* ===== ANIMS ===== */
     @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -103,7 +106,6 @@
     @keyframes float{0%{transform:translateY(0) translateX(0) rotate(0);opacity:1}25%{transform:translateY(-20px) translateX(10px) rotate(90deg)}50%{transform:translateY(-40px) translateX(0) rotate(180deg);opacity:.8}75%{transform:translateY(-20px) translateX(-10px) rotate(270deg)}100%{transform:translateY(0) translateX(0) rotate(360deg);opacity:1}}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-    /* Music loading indicator */
     .music-loading{display:inline-block;width:12px;height:12px;border:2px solid #f3f3f3;border-top:2px solid #b388ff;border-radius:50%;animation:spin 1s linear infinite;margin-right:5px}
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
   </style>
@@ -147,16 +149,17 @@
           <p style="opacity:.9; font-size: 1.2em;">HIL · SOME/IP · DoIP · UDS · Python · CAPL · Vector CANoe</p>
           <p style="opacity:.8; margin-top: 15px;">Test & Validation Engineer with ~5 years in embedded HIL testing, automation, and diagnostics. Expert in automated validation of embedded software and communication protocols.</p>
 
-          <!-- Hero Terminal (typed) -->
+          <!-- Hero Terminal -->
           <div class="code-terminal type-on-view" data-type-speed="60">
             <div class="terminal-header">
               <div class="terminal-title"><i class="fas fa-terminal"></i> system@portfolio:~</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <div class="code-line" data-line="<span class='prompt'>$</span><span class='command'>whoami</span>"></div>
-            <div class="code-line" data-line="<span class='output'>Senior Embedded Software Validation Engineer</span>"></div>
-            <div class="code-line" data-line="<span class='prompt'>$</span><span class='command'>cat specialties.txt</span>"></div>
-            <div class="code-line" data-line="<span class='output'>HIL Testing • SOME/IP • DoIP • UDS • Python • CAPL</span>"></div>
+            <!-- Visible content is the same as data-line (safe fallback) -->
+            <div class="code-line" data-line="<span class='prompt'>$</span><span class='command'>whoami</span>"><span class="prompt">$</span><span class="command">whoami</span></div>
+            <div class="code-line" data-line="<span class='output'>Senior Embedded Software Validation Engineer</span>"><span class="output">Senior Embedded Software Validation Engineer</span></div>
+            <div class="code-line" data-line="<span class='prompt'>$</span><span class='command'>cat specialties.txt</span>"><span class="prompt">$</span><span class="command">cat specialties.txt</span></div>
+            <div class="code-line" data-line="<span class='output'>HIL Testing • SOME/IP • DoIP • UDS • Python • CAPL</span>"><span class="output">HIL Testing • SOME/IP • DoIP • UDS • Python • CAPL</span></div>
           </div>
 
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
@@ -166,7 +169,7 @@
           </div>
         </div>
 
-        <!-- Avatar with eye tracking + head tilt -->
+        <!-- Avatar -->
         <div class="card" id="avatarCard">
           <div class="avatar-wrap" id="avatarWrap">
             <img id="avatar2D" class="avatar-img"
@@ -201,16 +204,16 @@
               <div class="terminal-title"><i class="fas fa-network-wired"></i> protocol_validation@italdesign</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <div class="code-line" data-line="&gt; <span class='command'>SOME/IP Validation:</span> <span class='output'>DoIP • TCP • UDP protocols</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Tools:</span> <span class='output'>Python (ENNA) + Vector CANoe</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Traceability:</span> <span class='output'>Codebeamer bidirectional mapping</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Agile Workflow:</span> <span class='output'>JIRA tickets + Root cause analysis</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Android Integration:</span> <span class='output'>ADB shell commands + Device management</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Reporting:</span> <span class='output'>Automated pipelines → SharePoint/Codebeamer</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>HIL Management:</span> <span class='output'>CAN/Ethernet TCP + Fault resilience</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Diagnostics:</span> <span class='output'>UDS • ECU flashing • Climate chamber testing</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Infrastructure:</span> <span class='output'>Vector migration • Resurrected blocked tests</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Tools Development:</span> <span class='output'>GUI analysis acceleration</span>"></div>
+            <div class="code-line" data-line="&gt; <span class='command'>SOME/IP Validation:</span> <span class='output'>DoIP • TCP • UDP protocols</span>">&gt; <span class='command'>SOME/IP Validation:</span> <span class='output'>DoIP • TCP • UDP protocols</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Tools:</span> <span class='output'>Python (ENNA) + Vector CANoe</span>">&gt; <span class='command'>Tools:</span> <span class='output'>Python (ENNA) + Vector CANoe</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Traceability:</span> <span class='output'>Codebeamer bidirectional mapping</span>">&gt; <span class='command'>Traceability:</span> <span class='output'>Codebeamer bidirectional mapping</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Agile Workflow:</span> <span class='output'>JIRA tickets + Root cause analysis</span>">&gt; <span class='command'>Agile Workflow:</span> <span class='output'>JIRA tickets + Root cause analysis</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Android Integration:</span> <span class='output'>ADB shell commands • Device management</span>">&gt; <span class='command'>Android Integration:</span> <span class='output'>ADB shell commands • Device management</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Reporting:</span> <span class='output'>Automated pipelines → SharePoint/Codebeamer</span>">&gt; <span class='command'>Reporting:</span> <span class='output'>Automated pipelines → SharePoint/Codebeamer</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>HIL Management:</span> <span class='output'>CAN/Ethernet TCP • Fault resilience</span>">&gt; <span class='command'>HIL Management:</span> <span class='output'>CAN/Ethernet TCP • Fault resilience</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Diagnostics:</span> <span class='output'>UDS • ECU flashing • Climate chamber testing</span>">&gt; <span class='command'>Diagnostics:</span> <span class='output'>UDS • ECU flashing • Climate chamber testing</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Infrastructure:</span> <span class='output'>Vector migration • Resurrected blocked tests</span>">&gt; <span class='command'>Infrastructure:</span> <span class='output'>Vector migration • Resurrected blocked tests</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Tools Development:</span> <span class='output'>GUI analysis acceleration</span>">&gt; <span class='command'>Tools Development:</span> <span class='output'>GUI analysis acceleration</span></div>
           </div>
         </div>
 
@@ -227,35 +230,15 @@
               <div class="terminal-title"><i class="fas fa-microchip"></i> hil_validation@marquardt</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <div class="code-line" data-line="&gt; <span class='command'>HIL Benches:</span> <span class='output'>VT System • IBB configuration</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Tools:</span> <span class='output'>Vector CANoe • vTESTstudio</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>PCB Testing:</span> <span class='output'>Voltage/current • LED • Signal integrity</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Custom Hardware:</span> <span class='output'>Test boxes • Electronic circuits design</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>UDS Diagnostics:</span> <span class='output'>Security access • DTC • ECU reset</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>ECU Flashing:</span> <span class='output'>VFlash • Lauterbach • TestBenchClient</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Requirements:</span> <span class='output'>IBM DOORS analysis • Coverage tracking</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Team Training:</span> <span class='output'>Onboarding acceleration (3→1 month)</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Optimization:</span> <span class='output'>HIL availability +25% • Library organization</span>"></div>
-          </div>
-        </div>
-
-        <!-- QA Training -->
-        <div class="experience-item card">
-          <div class="experience-header">
-            <h3>QA Test & Validation Training</h3>
-            <div class="date">Jan 2021 - Apr 2021</div>
-          </div>
-          <div class="company">ProServices Company | Tunisia</div>
-
-          <div class="code-terminal type-on-view" data-type-speed="60">
-            <div class="terminal-header">
-              <div class="terminal-title"><i class="fas fa-clipboard-check"></i> qa_training@proservices</div>
-              <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
-            </div>
-            <div class="code-line" data-line="&gt; <span class='command'>Manual Testing:</span> <span class='output'>TestLink campaigns • Excel reporting</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Automation:</span> <span class='output'>Katalon • Selenium • TestOps reports</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Workflow:</span> <span class='output'>JIRA setup • MOA specs analysis</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Docs:</span> <span class='output'>Test case templates • Structured documentation</span>"></div>
+            <div class="code-line" data-line="&gt; <span class='command'>HIL Benches:</span> <span class='output'>VT System • IBB configuration</span>">&gt; <span class='command'>HIL Benches:</span> <span class='output'>VT System • IBB configuration</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Tools:</span> <span class='output'>Vector CANoe • vTESTstudio</span>">&gt; <span class='command'>Tools:</span> <span class='output'>Vector CANoe • vTESTstudio</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>PCB Testing:</span> <span class='output'>Voltage/current • LED • Signal integrity</span>">&gt; <span class='command'>PCB Testing:</span> <span class='output'>Voltage/current • LED • Signal integrity</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Custom Hardware:</span> <span class='output'>Test boxes • Electronic circuits design</span>">&gt; <span class='command'>Custom Hardware:</span> <span class='output'>Test boxes • Electronic circuits design</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>UDS Diagnostics:</span> <span class='output'>Security access • DTC • ECU reset</span>">&gt; <span class='command'>UDS Diagnostics:</span> <span class='output'>Security access • DTC • ECU reset</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>ECU Flashing:</span> <span class='output'>VFlash • Lauterbach • TestBenchClient</span>">&gt; <span class='command'>ECU Flashing:</span> <span class='output'>VFlash • Lauterbach • TestBenchClient</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Requirements:</span> <span class='output'>IBM DOORS analysis • Coverage tracking</span>">&gt; <span class='command'>Requirements:</span> <span class='output'>IBM DOORS analysis • Coverage tracking</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Team Training:</span> <span class='output'>Onboarding acceleration (3→1 month)</span>">&gt; <span class='command'>Team Training:</span> <span class='output'>Onboarding acceleration (3→1 month)</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Optimization:</span> <span class='output'>HIL availability +25% • Library organization</span>">&gt; <span class='command'>Optimization:</span> <span class='output'>HIL availability +25% • Library organization</span></div>
           </div>
         </div>
       </div>
@@ -271,13 +254,13 @@
               <div class="terminal-title"><i class="fas fa-laptop-code"></i> skills_matrix@system</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <div class="code-line" data-line="$ <span class='command'>Protocols:</span> <span class='output'>CAN • LIN • Ethernet • SOME/IP • DoIP • UDS</span>"></div>
-            <div class="code-line" data-line="$ <span class='command'>Languages:</span> <span class='output'>Python • CAPL • C/C++ • MATLAB</span>"></div>
-            <div class="code-line" data-line="$ <span class='command'>Tools:</span> <span class='output'>Vector CANoe • vTESTstudio • CANalyzer • VFlash • Lauterbach • ODIS</span>"></div>
-            <div class="code-line" data-line="$ <span class='command'>Traceability/ALM:</span> <span class='output'>Codebeamer • IBM DOORS • JIRA • Git • SharePoint</span>"></div>
-            <div class="code-line" data-line="$ <span class='command'>Measurements:</span> <span class='output'>Oscilloscope • Picoscope • Multimeter</span>"></div>
-            <div class="code-line" data-line="$ <span class='command'>Analysis:</span> <span class='output'>Wireshark • EsoTrace • MobiXtreme</span>"></div>
-            <div class="code-line" data-line="$ <span class='command'>Testing Methods:</span> <span class='output'>Black Box • Regression • Functional • System • Stress • Performance</span>"></div>
+            <div class="code-line" data-line="$ <span class='command'>Protocols:</span> <span class='output'>CAN • LIN • Ethernet • SOME/IP • DoIP • UDS</span>">$ <span class='command'>Protocols:</span> <span class='output'>CAN • LIN • Ethernet • SOME/IP • DoIP • UDS</span></div>
+            <div class="code-line" data-line="$ <span class='command'>Languages:</span> <span class='output'>Python • CAPL • C/C++ • MATLAB</span>">$ <span class='command'>Languages:</span> <span class='output'>Python • CAPL • C/C++ • MATLAB</span></div>
+            <div class="code-line" data-line="$ <span class='command'>Tools:</span> <span class='output'>Vector CANoe • vTESTstudio • CANalyzer • VFlash • Lauterbach • ODIS</span>">$ <span class='command'>Tools:</span> <span class='output'>Vector CANoe • vTESTstudio • CANalyzer • VFlash • Lauterbach • ODIS</span></div>
+            <div class="code-line" data-line="$ <span class='command'>Traceability/ALM:</span> <span class='output'>Codebeamer • IBM DOORS • JIRA • Git • SharePoint</span>">$ <span class='command'>Traceability/ALM:</span> <span class='output'>Codebeamer • IBM DOORS • JIRA • Git • SharePoint</span></div>
+            <div class="code-line" data-line="$ <span class='command'>Measurements:</span> <span class='output'>Oscilloscope • Picoscope • Multimeter</span>">$ <span class='command'>Measurements:</span> <span class='output'>Oscilloscope • Picoscope • Multimeter</span></div>
+            <div class="code-line" data-line="$ <span class='command'>Analysis:</span> <span class='output'>Wireshark • EsoTrace • MobiXtreme</span>">$ <span class='command'>Analysis:</span> <span class='output'>Wireshark • EsoTrace • MobiXtreme</span></div>
+            <div class="code-line" data-line="$ <span class='command'>Testing Methods:</span> <span class='output'>Black Box • Regression • Functional • System • Stress • Performance</span>">$ <span class='command'>Testing Methods:</span> <span class='output'>Black Box • Regression • Functional • System • Stress • Performance</span></div>
           </div>
         </div>
       </div>
@@ -293,9 +276,9 @@
               <div class="terminal-title"><i class="fas fa-university"></i> education@profile</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <div class="code-line" data-line="&gt; <span class='command'>Degree:</span> <span class='output'>Bachelor’s in Electrical Engineering (Master’s equivalent)</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Specialization:</span> <span class='output'>Embedded Systems & Computer Science</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>GPA:</span> <span class='output'>Very Good</span>"></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Degree:</span> <span class='output'>Bachelor’s in Electrical Engineering (Master’s equivalent)</span>">&gt; <span class='command'>Degree:</span> <span class='output'>Bachelor’s in Electrical Engineering (Master’s equivalent)</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Specialization:</span> <span class='output'>Embedded Systems & Computer Science</span>">&gt; <span class='command'>Specialization:</span> <span class='output'>Embedded Systems & Computer Science</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>GPA:</span> <span class='output'>Very Good</span>">&gt; <span class='command'>GPA:</span> <span class='output'>Very Good</span></div>
           </div>
         </div>
       </div>
@@ -311,9 +294,9 @@
               <div class="terminal-title"><i class="fas fa-id-badge"></i> certs@profile</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <div class="code-line" data-line="&gt; <span class='command'>Certifications:</span> <span class='output'>ISTQB • ISO 26262</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>License:</span> <span class='output'>Italian Driving License — Category B</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Languages:</span> <span class='output'>English (Fluent) • French (Fluent)</span>"></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Certifications:</span> <span class='output'>ISTQB • ISO 26262</span>">&gt; <span class='command'>Certifications:</span> <span class='output'>ISTQB • ISO 26262</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>License:</span> <span class='output'>Italian Driving License — Category B</span>">&gt; <span class='command'>License:</span> <span class='output'>Italian Driving License — Category B</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Languages:</span> <span class='output'>English (Fluent) • French (Fluent)</span>">&gt; <span class='command'>Languages:</span> <span class='output'>English (Fluent) • French (Fluent)</span></div>
           </div>
         </div>
       </div>
@@ -329,11 +312,11 @@
               <div class="terminal-title"><i class="fas fa-address-card"></i> contact_info@portfolio</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <div class="code-line" data-line="&gt; <span class='command'>Email:</span> <span class='output'>khaled.ahmed@enis.tn</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Phone:</span> <span class='output'>+39 3318039484</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>LinkedIn:</span> <span class='output'>linkedin.com/in/khaled-ahmed-b157421b2</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Location:</span> <span class='output'>Moncalieri, Torino, Italy 10024</span>"></div>
-            <div class="code-line" data-line="&gt; <span class='command'>Status:</span> <span class='output'>Available for opportunities</span>"></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Email:</span> <span class='output'>khaled.ahmed@enis.tn</span>">&gt; <span class='command'>Email:</span> <span class='output'>khaled.ahmed@enis.tn</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Phone:</span> <span class='output'>+39 3318039484</span>">&gt; <span class='command'>Phone:</span> <span class='output'>+39 3318039484</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>LinkedIn:</span> <span class='output'>linkedin.com/in/khaled-ahmed-b157421b2</span>">&gt; <span class='command'>LinkedIn:</span> <span class='output'>linkedin.com/in/khaled-ahmed-b157421b2</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Location:</span> <span class='output'>Moncalieri, Torino, Italy 10024</span>">&gt; <span class='command'>Location:</span> <span class='output'>Moncalieri, Torino, Italy 10024</span></div>
+            <div class="code-line" data-line="&gt; <span class='command'>Status:</span> <span class='output'>Available for opportunities</span>">&gt; <span class='command'>Status:</span> <span class='output'>Available for opportunities</span></div>
           </div>
 
           <div class="contact-links">
@@ -359,38 +342,22 @@
   </audio>
 
   <script>
-  // YEAR + header scroll
-  const yearEl=document.getElementById('year'); if(yearEl) yearEl.textContent=new Date().getFullYear();
-  window.addEventListener('scroll',()=>{document.querySelector('header').classList.toggle('scrolled',window.scrollY>10)});
+  /* ========== UTILITIES ========== */
+  const $ = (s,root=document)=>root.querySelector(s);
+  const $$ = (s,root=document)=>[...root.querySelectorAll(s)];
 
-  // MUSIC (same logic you had, condensed)
-  const music=document.getElementById('customTrack'), musicBtn=document.getElementById('audioToggle'),
-        musicIcon=document.getElementById('musicIcon'), musicText=document.getElementById('musicText');
-  let musicPlaying=false, musicLoaded=false, userInteracted=false;
-  function updateMusicButton(){ if(!musicLoaded){musicIcon.textContent='⏳';musicText.textContent='Music: Loading...';musicBtn.disabled=true}
-    else if(musicPlaying){musicIcon.textContent='🔊';musicText.textContent='Music: On';musicBtn.disabled=false}
-    else{musicIcon.textContent='🔇';musicText.textContent='Music: Off';musicBtn.disabled=false}}
-  function playMusic(){ if(!musicLoaded) return; music.play().then(()=>{musicPlaying=true;updateMusicButton()}).catch(()=>{musicText.textContent='Music: Click to Play'})}
-  function pauseMusic(){ music.pause(); musicPlaying=false; updateMusicButton() }
-  function toggleMusic(){ if(!musicLoaded) return; musicPlaying?pauseMusic():playMusic() }
-  function handleUserInteraction(){ if(!userInteracted){userInteracted=true;if(musicLoaded && !musicPlaying) playMusic();
-    document.removeEventListener('click',handleUserInteraction);document.removeEventListener('keydown',handleUserInteraction);document.removeEventListener('scroll',handleUserInteraction)}}
-  function initMusic(){updateMusicButton();music.addEventListener('canplaythrough',()=>{musicLoaded=true;updateMusicButton();if(userInteracted&&!musicPlaying) playMusic()});
-    music.addEventListener('error',()=>{musicText.textContent='Music: Load Error';musicBtn.disabled=true});
-    music.addEventListener('ended',()=>{if(musicPlaying){music.currentTime=0;music.play().catch(()=>{})}})}
-  document.addEventListener('DOMContentLoaded',()=>{initMusic();
-    document.addEventListener('click',handleUserInteraction);document.addEventListener('keydown',handleUserInteraction);document.addEventListener('scroll',handleUserInteraction);
-    musicBtn.addEventListener('click',e=>{e.stopPropagation();handleUserInteraction();toggleMusic()})});
+  /* Year + header */
+  const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+  window.addEventListener('scroll',()=>{$('header').classList.toggle('scrolled',window.scrollY>10)});
 
-  // SCENES
-  const scenes=document.querySelectorAll('.scene'); let currentSceneIndex=0;
-  function switchScene(){ scenes[currentSceneIndex].classList.remove('active'); currentSceneIndex=(currentSceneIndex+1)%scenes.length; scenes[currentSceneIndex].classList.add('active'); createParticles() }
-  document.getElementById('switchStyle').addEventListener('click',switchScene); setInterval(switchScene,8000);
+  /* Scenes */
+  const scenes = $$('.scene'); let currentSceneIndex=0;
+  function switchScene(){ scenes[currentSceneIndex].classList.remove('active'); currentSceneIndex=(currentSceneIndex+1)%scenes.length; scenes[currentSceneIndex].classList.add('active'); createParticles(); }
+  $('#switchStyle').addEventListener('click',switchScene); setInterval(switchScene,8000);
 
-  // PARTICLES
   function createParticles(){
-    document.querySelectorAll('.particle').forEach(p=>p.remove());
-    const id=scenes[currentSceneIndex].id, box=document.getElementById(`${id}-particles`);
+    $$('.particle').forEach(p=>p.remove());
+    const id=scenes[currentSceneIndex].id, box=$(`#${id}-particles`);
     let count=80, cls='sakura-particle', size='5px';
     if(id==='neon-scene'){count=60;cls='neon-particle';size='8px'}
     else if(id==='sunset-scene'){count=100;cls='sunset-particle';size='3px'}
@@ -402,28 +369,50 @@
   }
   createParticles();
 
-  // ======== TYPEWRITER (loops on re-enter) ========
+  /* Music (auto-plays after first interaction — browser policy) */
+  const music=$('#customTrack'), musicBtn=$('#audioToggle'), musicIcon=$('#musicIcon'), musicText=$('#musicText');
+  let musicPlaying=false, musicLoaded=false, userInteracted=false;
+  function updateMusicButton(){ if(!musicLoaded){musicIcon.textContent='⏳';musicText.textContent='Music: Loading...';musicBtn.disabled=true}
+    else if(musicPlaying){musicIcon.textContent='🔊';musicText.textContent='Music: On';musicBtn.disabled=false}
+    else{musicIcon.textContent='🔇';musicText.textContent='Music: Off';musicBtn.disabled=false}}
+  function playMusic(){ if(!musicLoaded) return; music.play().then(()=>{musicPlaying=true;updateMusicButton()}).catch(()=>{musicText.textContent='Music: Click to Play'})}
+  function pauseMusic(){ music.pause(); musicPlaying=false; updateMusicButton() }
+  function toggleMusic(){ musicPlaying?pauseMusic():playMusic() }
+  function handleUserInteraction(){ if(!userInteracted){userInteracted=true;if(musicLoaded && !musicPlaying) playMusic();
+    document.removeEventListener('click',handleUserInteraction);document.removeEventListener('keydown',handleUserInteraction);document.removeEventListener('scroll',handleUserInteraction)}}
+  function initMusic(){updateMusicButton();music.addEventListener('canplaythrough',()=>{musicLoaded=true;updateMusicButton();if(userInteracted&&!musicPlaying) playMusic()});
+    music.addEventListener('error',()=>{musicText.textContent='Music: Load Error';musicBtn.disabled=true});
+    music.addEventListener('ended',()=>{if(musicPlaying){music.currentTime=0;music.play().catch(()=>{})}})}
+  document.addEventListener('DOMContentLoaded',()=>{initMusic();
+    document.addEventListener('click',handleUserInteraction);document.addEventListener('keydown',handleUserInteraction);document.addEventListener('scroll',handleUserInteraction);
+    musicBtn.addEventListener('click',e=>{e.stopPropagation();handleUserInteraction();toggleMusic()})});
+
+  /* ===== TYPEWRITER (loop + safe fallback) =====
+     - Each .code-line already has visible content (fallback)
+     - We read data-line, clear, and type it. On leave, we reset so it retypes on re-enter.
+  */
   class Typer{
     constructor(container){
       this.container=container;
-      this.lines=[...container.querySelectorAll('.code-line')];
-      this.speed=parseInt(container.dataset.typeSpeed||'60',10); // 60ms/char ≈ 0.06s
+      this.lines=$$('.code-line',container);
+      this.speed=parseInt(container.dataset.typeSpeed||'60',10);
       this.index=0; this.cancel=false;
     }
-    reset(){ this.cancel=true; this.lines.forEach(l=>{l.innerHTML='';l.style.opacity=0}); this.index=0; this.cancel=false }
+    reset(){ this.cancel=true; this.lines.forEach(l=>{ l.innerHTML=''; l.style.opacity=1; }); this.index=0; this.cancel=false; }
     async typeLine(el, html){
       el.style.opacity=1;
       const buf=document.createElement('span'), cursor=document.createElement('span');
       cursor.className='typed-cursor'; cursor.textContent='▌';
       el.appendChild(buf); el.appendChild(cursor);
-      for(let i=0;i<html.length;i++){ if(this.cancel) return; buf.innerHTML=html.slice(0,i+1); await new Promise(r=>setTimeout(r,this.speed)) }
+      for(let i=0;i<html.length;i++){ if(this.cancel) return; buf.innerHTML=html.slice(0,i+1); await new Promise(r=>setTimeout(r,this.speed)); }
       el.removeChild(cursor);
     }
     async play(){
+      // If no data-line (shouldn't happen), keep existing content
       this.reset();
       for(;this.index<this.lines.length;this.index++){
         if(this.cancel) return;
-        const el=this.lines[this.index], html=el.dataset.line||'';
+        const el=this.lines[this.index], html=el.dataset.line || el.innerHTML || '';
         await this.typeLine(el, html);
         await new Promise(r=>setTimeout(r,this.speed*6));
       }
@@ -442,53 +431,45 @@
           if(!state.playing){state.playing=true;state.typer.play().then(()=>{state.playing=false})}
         }else{
           if(state.playing){state.typer.cancel=true;state.playing=false}
-          state.typer.reset(); // prepare to loop
+          state.typer.reset();
         }
       })
     },{threshold:[0,.25,.5,1]});
-    document.querySelectorAll('.type-on-view').forEach(b=>io.observe(b));
+    $$('.type-on-view').forEach(b=>io.observe(b));
   }
-  // Ensure DOM ready before wiring
   window.addEventListener('load',()=>{
     observeTyping();
-    // If already in view on load, trigger immediately
-    document.querySelectorAll('.type-on-view').forEach(block=>{
+    // Trigger now for in-view blocks
+    $$('.type-on-view').forEach(block=>{
       const r=block.getBoundingClientRect();
       if(r.top<window.innerHeight && r.bottom>0){
-        const state=observed.get(block);
-        if(state && !state.playing){state.playing=true;state.typer.play().then(()=>{state.playing=false})}
+        const s=observed.get(block);
+        if(s && !s.playing){s.playing=true;s.typer.play().then(()=>{s.playing=false})}
       }
     });
   });
 
-  // ======== AVATAR: eyes track + head tilt ========
+  /* ===== AVATAR: eyes track + subtle head tilt ===== */
   (function(){
-    const wrap=document.getElementById('avatarWrap'), img=document.getElementById('avatar2D'),
-          pupilL=document.getElementById('pupilL'), pupilR=document.getElementById('pupilR');
-    if(!wrap||!img||!pupilL||!pupilR) return;
+    const wrap=$('#avatarWrap'), pupilL=$('#pupilL'), pupilR=$('#pupilR');
+    if(!wrap||!pupilL||!pupilR) return;
 
-    // adjust pupil size relative to image width
     function setPupilSize(){
       const w=wrap.getBoundingClientRect().width;
-      const size=Math.max(8, Math.min(14, w*0.03)); // 3% of width, clamped
+      const size=Math.max(10, Math.min(16, w*0.032)); // ~3.2% of width
       pupilL.style.setProperty('--pupil-size', size+'px');
       pupilR.style.setProperty('--pupil-size', size+'px');
     }
     setPupilSize(); window.addEventListener('resize', setPupilSize);
 
-    const maxPX = 10; // max horizontal pupil movement (px)
-    const maxPY = 6;  // max vertical pupil movement (px)
-    const maxTilt = 5; // degrees for head tilt
-
+    const maxPX=10, maxPY=6, maxTilt=5; // pupils px / tilt deg
     function moveEyes(xNorm, yNorm){
       const x = xNorm * maxPX, y = yNorm * maxPY;
       pupilL.style.transform = `translate(${x}px, ${y}px)`;
       pupilR.style.transform = `translate(${x}px, ${y}px)`;
-      // head tilt (subtle)
-      wrap.style.transform = `rotateY(${xNorm*maxTilt}deg) rotateX(${ -yNorm*maxTilt }deg)`;
+      wrap.style.transform = `rotateY(${xNorm*maxTilt}deg) rotateX(${-yNorm*maxTilt}deg)`;
       wrap.style.transition = 'transform 0.1s ease-out';
     }
-
     function normFromEvent(e){
       const rect = wrap.getBoundingClientRect();
       const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
@@ -496,14 +477,8 @@
       const yNorm = Math.max(-1, Math.min(1, (e.clientY - cy) / (rect.height/2)));
       return {x:xNorm, y:yNorm};
     }
-
-    document.addEventListener('mousemove',(e)=>{
-      const {x,y}=normFromEvent(e);
-      moveEyes(x,y);
-    });
-    document.addEventListener('mouseleave',()=>{
-      moveEyes(0,0);
-    });
+    document.addEventListener('mousemove',(e)=>{ const {x,y}=normFromEvent(e); moveEyes(x,y); });
+    document.addEventListener('mouseleave',()=>{ moveEyes(0,0); });
   })();
   </script>
 </body>
