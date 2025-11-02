@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Khaled Ahmed — Senior Embedded Software Validation Engineer</title>
-  <meta name="description" content="Khaled Ahmed · Senior Embedded Software Validation Engineer — Portfolio with animated background, music, and complete professional experience.">
+  <meta name="description" content="Khaled Ahmed · Senior Embedded Software Validation Engineer — Portfolio with animated background, music, eye-tracking avatar, and complete professional experience.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
@@ -67,7 +67,7 @@
     .terminal-btn{width:12px;height:12px;border-radius:50%}
     .close{background:#ff5f57}.minimize{background:#ffbd2e}.maximize{background:#28ca42}
 
-    /* IMPORTANT: visible by default so you never see blank boxes */
+    /* visible by default (never blank) */
     .code-line{margin:8px 0;white-space:pre-wrap;opacity:1}
     .typed-cursor{display:inline-block;width:10px;margin-left:3px;animation:blink 1s infinite}
     .prompt{color:var(--accent2);margin-right:10px}
@@ -88,14 +88,10 @@
     .contact-link{display:flex;align-items:center;gap:8px;padding:10px 15px;background:var(--card);border-radius:10px;border:1px solid var(--line);transition:all .3s ease}
     .contact-link:hover{background:rgba(179,136,255,.1);transform:translateY(-3px)}
 
-    /* ===== AVATAR + EYES ===== */
+    /* ===== AVATAR (two-image stack) ===== */
     .avatar-wrap{position:relative;width:100%;max-width:360px;margin:0 auto;transform-style:preserve-3d}
     .avatar-img{display:block;width:100%;border-radius:18px;will-change:transform}
-    .eyes-overlay{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
-    .pupil{position:absolute;width:var(--pupil-size,12px);height:var(--pupil-size,12px);border-radius:50%;background:rgba(20,20,20,.9);box-shadow:0 0 2px rgba(0,0,0,.6)}
-    /* Guess: eye centers */
-    .pupil.left{left:42%;top:44%}
-    .pupil.right{left:58%;top:44%}
+    .pupils-layer{position:absolute;inset:0;border-radius:18px;pointer-events:none; /* move this layer only */ }
 
     /* ===== ANIMS ===== */
     @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
@@ -104,10 +100,7 @@
     @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
     @keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
     @keyframes float{0%{transform:translateY(0) translateX(0) rotate(0);opacity:1}25%{transform:translateY(-20px) translateX(10px) rotate(90deg)}50%{transform:translateY(-40px) translateX(0) rotate(180deg);opacity:.8}75%{transform:translateY(-20px) translateX(-10px) rotate(270deg)}100%{transform:translateY(0) translateX(0) rotate(360deg);opacity:1}}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-    .music-loading{display:inline-block;width:12px;height:12px;border:2px solid #f3f3f3;border-top:2px solid #b388ff;border-radius:50%;animation:spin 1s linear infinite;margin-right:5px}
-    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}} /* not used (no blinks) */
   </style>
 </head>
 <body>
@@ -155,7 +148,6 @@
               <div class="terminal-title"><i class="fas fa-terminal"></i> system@portfolio:~</div>
               <div class="terminal-buttons"><div class="terminal-btn close"></div><div class="terminal-btn minimize"></div><div class="terminal-btn maximize"></div></div>
             </div>
-            <!-- Visible content is the same as data-line (safe fallback) -->
             <div class="code-line" data-line="<span class='prompt'>$</span><span class='command'>whoami</span>"><span class="prompt">$</span><span class="command">whoami</span></div>
             <div class="code-line" data-line="<span class='output'>Senior Embedded Software Validation Engineer</span>"><span class="output">Senior Embedded Software Validation Engineer</span></div>
             <div class="code-line" data-line="<span class='prompt'>$</span><span class='command'>cat specialties.txt</span>"><span class="prompt">$</span><span class="command">cat specialties.txt</span></div>
@@ -169,17 +161,17 @@
           </div>
         </div>
 
-        <!-- Avatar -->
+        <!-- Avatar (two-image stack) -->
         <div class="card" id="avatarCard">
           <div class="avatar-wrap" id="avatarWrap">
-            <img id="avatar2D" class="avatar-img"
-              src="https://cdn.jsdelivr.net/gh/Ahmedzikoo1995/static@main/avatar_hero.png"
-              onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1535905557558-afc4877a26fc?q=80&w=800&auto=format&fit=crop'"
-              alt="Khaled Ahmed" />
-            <div class="eyes-overlay">
-              <div class="pupil left" id="pupilL"></div>
-              <div class="pupil right" id="pupilR"></div>
-            </div>
+            <!-- Base face (no pupils) -->
+            <img class="avatar-img" id="avatarBase"
+                 src="https://raw.githubusercontent.com/Ahmedzikoo1995/static/main/avatar_base.png"
+                 alt="Khaled Ahmed (base)" />
+            <!-- Pupils overlay (transparent PNG same size) -->
+            <img class="pupils-layer" id="avatarPupils"
+                 src="https://raw.githubusercontent.com/Ahmedzikoo1995/static/main/avatar_pupils.png"
+                 alt="Pupils overlay" />
           </div>
           <p style="opacity:.8;margin:10px 0 0;text-align:center">Senior Embedded Software Validation Engineer</p>
         </div>
@@ -342,7 +334,7 @@
   </audio>
 
   <script>
-  /* ========== UTILITIES ========== */
+  /* ===== Short helpers ===== */
   const $ = (s,root=document)=>root.querySelector(s);
   const $$ = (s,root=document)=>[...root.querySelectorAll(s)];
 
@@ -350,7 +342,7 @@
   const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
   window.addEventListener('scroll',()=>{$('header').classList.toggle('scrolled',window.scrollY>10)});
 
-  /* Scenes */
+  /* ===== Scenes ===== */
   const scenes = $$('.scene'); let currentSceneIndex=0;
   function switchScene(){ scenes[currentSceneIndex].classList.remove('active'); currentSceneIndex=(currentSceneIndex+1)%scenes.length; scenes[currentSceneIndex].classList.add('active'); createParticles(); }
   $('#switchStyle').addEventListener('click',switchScene); setInterval(switchScene,8000);
@@ -369,7 +361,7 @@
   }
   createParticles();
 
-  /* Music (auto-plays after first interaction — browser policy) */
+  /* ===== Music (auto-plays after first interaction) ===== */
   const music=$('#customTrack'), musicBtn=$('#audioToggle'), musicIcon=$('#musicIcon'), musicText=$('#musicText');
   let musicPlaying=false, musicLoaded=false, userInteracted=false;
   function updateMusicButton(){ if(!musicLoaded){musicIcon.textContent='⏳';musicText.textContent='Music: Loading...';musicBtn.disabled=true}
@@ -387,10 +379,7 @@
     document.addEventListener('click',handleUserInteraction);document.addEventListener('keydown',handleUserInteraction);document.addEventListener('scroll',handleUserInteraction);
     musicBtn.addEventListener('click',e=>{e.stopPropagation();handleUserInteraction();toggleMusic()})});
 
-  /* ===== TYPEWRITER (loop + safe fallback) =====
-     - Each .code-line already has visible content (fallback)
-     - We read data-line, clear, and type it. On leave, we reset so it retypes on re-enter.
-  */
+  /* ===== Typewriter (loops on view) ===== */
   class Typer{
     constructor(container){
       this.container=container;
@@ -398,9 +387,9 @@
       this.speed=parseInt(container.dataset.typeSpeed||'60',10);
       this.index=0; this.cancel=false;
     }
-    reset(){ this.cancel=true; this.lines.forEach(l=>{ l.innerHTML=''; l.style.opacity=1; }); this.index=0; this.cancel=false; }
+    reset(){ this.cancel=true; this.lines.forEach(l=>{ l.innerHTML=l.dataset.line || l.innerHTML; }); this.index=0; this.cancel=false; }
     async typeLine(el, html){
-      el.style.opacity=1;
+      el.innerHTML='';
       const buf=document.createElement('span'), cursor=document.createElement('span');
       cursor.className='typed-cursor'; cursor.textContent='▌';
       el.appendChild(buf); el.appendChild(cursor);
@@ -408,9 +397,7 @@
       el.removeChild(cursor);
     }
     async play(){
-      // If no data-line (shouldn't happen), keep existing content
-      this.reset();
-      for(;this.index<this.lines.length;this.index++){
+      for(this.index=0;this.index<this.lines.length;this.index++){
         if(this.cancel) return;
         const el=this.lines[this.index], html=el.dataset.line || el.innerHTML || '';
         await this.typeLine(el, html);
@@ -439,7 +426,7 @@
   }
   window.addEventListener('load',()=>{
     observeTyping();
-    // Trigger now for in-view blocks
+    // trigger now for blocks already in view
     $$('.type-on-view').forEach(block=>{
       const r=block.getBoundingClientRect();
       if(r.top<window.innerHeight && r.bottom>0){
@@ -449,26 +436,21 @@
     });
   });
 
-  /* ===== AVATAR: eyes track + subtle head tilt ===== */
+  /* ===== Avatar: move pupil layer + subtle head tilt ===== */
   (function(){
-    const wrap=$('#avatarWrap'), pupilL=$('#pupilL'), pupilR=$('#pupilR');
-    if(!wrap||!pupilL||!pupilR) return;
+    const wrap=$('#avatarWrap'), pupils=$('#avatarPupils');
+    if(!wrap||!pupils) return;
 
-    function setPupilSize(){
-      const w=wrap.getBoundingClientRect().width;
-      const size=Math.max(10, Math.min(16, w*0.032)); // ~3.2% of width
-      pupilL.style.setProperty('--pupil-size', size+'px');
-      pupilR.style.setProperty('--pupil-size', size+'px');
-    }
-    setPupilSize(); window.addEventListener('resize', setPupilSize);
+    // Subtle scaling to ensure overlay matches rounded corners perfectly
+    pupils.style.willChange = 'transform';
+    wrap.style.willChange = 'transform';
 
-    const maxPX=10, maxPY=6, maxTilt=5; // pupils px / tilt deg
-    function moveEyes(xNorm, yNorm){
+    const maxPX=10, maxPY=6, maxTilt=5; // px and degrees
+    function move(xNorm,yNorm){
       const x = xNorm * maxPX, y = yNorm * maxPY;
-      pupilL.style.transform = `translate(${x}px, ${y}px)`;
-      pupilR.style.transform = `translate(${x}px, ${y}px)`;
+      pupils.style.transform = `translate(${x}px, ${y}px)`;
       wrap.style.transform = `rotateY(${xNorm*maxTilt}deg) rotateX(${-yNorm*maxTilt}deg)`;
-      wrap.style.transition = 'transform 0.1s ease-out';
+      wrap.style.transition = 'transform 0.12s ease-out';
     }
     function normFromEvent(e){
       const rect = wrap.getBoundingClientRect();
@@ -477,8 +459,9 @@
       const yNorm = Math.max(-1, Math.min(1, (e.clientY - cy) / (rect.height/2)));
       return {x:xNorm, y:yNorm};
     }
-    document.addEventListener('mousemove',(e)=>{ const {x,y}=normFromEvent(e); moveEyes(x,y); });
-    document.addEventListener('mouseleave',()=>{ moveEyes(0,0); });
+    document.addEventListener('mousemove',(e)=>{ const {x,y}=normFromEvent(e); move(x,y); });
+    document.addEventListener('mouseleave',()=>{ move(0,0); });
+    window.addEventListener('resize',()=>{ move(0,0); });
   })();
   </script>
 </body>
