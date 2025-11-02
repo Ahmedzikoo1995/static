@@ -16,9 +16,77 @@
     html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial}
     a{color:inherit;text-decoration:none}
 
-    /* ======== FULLSCREEN 3D CANVAS ======== */
-    #world{position:fixed;inset:0;z-index:-1;width:100%;height:100%;display:block;pointer-events:none}
-    .fadeLayer{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .6s ease}
+    /* ======== FULLSCREEN BACKGROUND ======== */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .scene {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .scene.active {
+      opacity: 1;
+    }
+    
+    #sakura-scene {
+      background: linear-gradient(rgba(7, 8, 15, 0.7), rgba(7, 8, 15, 0.7)), 
+                  url('https://images.unsplash.com/photo-1492447273231-0f8fecec1e59?q=80&w=2400&auto=format&fit=crop');
+    }
+    
+    #neon-scene {
+      background: linear-gradient(rgba(7, 8, 15, 0.7), rgba(7, 8, 15, 0.7)), 
+                  url('https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=2400&auto=format&fit=crop');
+    }
+    
+    #sunset-scene {
+      background: linear-gradient(rgba(7, 8, 15, 0.7), rgba(7, 8, 15, 0.7)), 
+                  url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop');
+    }
+    
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    
+    .sakura-particle {
+      background: #ffb7c5;
+      box-shadow: 0 0 10px #ffb7c5;
+    }
+    
+    .neon-particle {
+      background: #5fa2ff;
+      box-shadow: 0 0 15px #5fa2ff;
+    }
+    
+    .sunset-particle {
+      background: #ffaa5f;
+      box-shadow: 0 0 8px #ffaa5f;
+    }
 
     /* ======== HEADER / NAV ======== */
     header{position:sticky;top:0;z-index:20;background:linear-gradient(to bottom, rgba(7,8,15,.9), rgba(7,8,15,.35), rgba(7,8,15,0));backdrop-filter:saturate(140%) blur(6px)}
@@ -28,7 +96,8 @@
     .logo{width:36px;height:36px;border-radius:12px;background:radial-gradient(120px 80px at 30% 30%, var(--accent), transparent),radial-gradient(120px 80px at 70% 70%, var(--accent2), transparent)}
     .links a{margin:0 8px;padding:8px 10px;border-radius:10px;color:#cbd1df}
     .links a:hover{background:rgba(255,255,255,.08);color:#fff}
-    .btn{border:1px solid var(--line);background:var(--card);color:#fff;padding:10px 14px;border-radius:14px;cursor:pointer}
+    .btn{border:1px solid var(--line);background:var(--card);color:#fff;padding:10px 14px;border-radius:14px;cursor:pointer;transition: all 0.3s ease;}
+    .btn:hover {transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
 
     /* ======== HERO ======== */
     #hero{min-height:90vh;display:grid;place-items:center}
@@ -45,17 +114,56 @@
     .pill{border:1px solid var(--line);background:rgba(0,0,0,.12);border-radius:999px;padding:8px 14px;white-space:nowrap}
 
     /* ======== INTRO ======== */
-    #intro{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(7,8,15,.58);backdrop-filter:blur(2px);z-index:30}
-    #intro .bubble{background:var(--card);border:1px solid var(--line);padding:18px;border-radius:14px;max-width:780px}
+    #intro{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(7,8,15,.85);
+      backdrop-filter:blur(2px);
+      z-index:30;
+      cursor: pointer;
+    }
+    #intro .bubble{
+      background:var(--card);
+      border:1px solid var(--line);
+      padding:18px;
+      border-radius:14px;
+      max-width:780px;
+      text-align:center;
+      animation: pulse 2s infinite;
+      cursor: pointer;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
-  <!-- 3D World -->
-  <canvas id="world"></canvas>
-  <div class="fadeLayer" id="fade"></div>
+  <!-- Background Container -->
+  <div class="background-container">
+    <div id="sakura-scene" class="scene active">
+      <div class="particles" id="sakura-particles"></div>
+    </div>
+    <div id="neon-scene" class="scene">
+      <div class="particles" id="neon-particles"></div>
+    </div>
+    <div id="sunset-scene" class="scene">
+      <div class="particles" id="sunset-particles"></div>
+    </div>
+  </div>
 
   <!-- Intro (first click will start music) -->
-  <div id="intro"><div class="bubble">👋 Hi, I’m <b>Khaled Ahmed</b>. Welcome to my anime 3D portfolio.<br>Tap/click anywhere to start my soundtrack and explore ↓</div></div>
+  <div id="intro">
+    <div class="bubble">
+      👋 Hi, I'm <b>Khaled Ahmed</b>. Welcome to my anime 3D portfolio.<br>
+      Tap/click anywhere to start my soundtrack and explore ↓
+    </div>
+  </div>
 
   <!-- Header -->
   <header>
@@ -161,7 +269,7 @@
   <section id="education">
     <div class="container">
       <h2>🎓 Education & Certificates</h2>
-      <div class="card"><h3>Bachelor’s Degree — Electrical Engineering</h3>
+      <div class="card"><h3>Bachelor's Degree — Electrical Engineering</h3>
         <p>Specialization: Embedded Systems & Computer Science · GPA: <strong>Very Good</strong></p>
       </div>
       <div class="card"><h3>Certificates & License</h3>
@@ -183,137 +291,198 @@
   <!-- Only your soundtrack -->
   <audio id="customTrack" src="https://cdn.jsdelivr.net/gh/Ahmedzikoo1995/static@main/soft%20engineer.mp3" preload="auto" loop></audio>
 
-  <script src="https://unpkg.com/three@0.159.0/build/three.min.js"></script>
   <script>
   // ========== YEAR ==========
-  const yearEl=document.getElementById('year'); if(yearEl) yearEl.textContent=new Date().getFullYear();
+  const yearEl = document.getElementById('year'); 
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // ========== MUSIC (autoplay-safe) ==========
-  const music=document.getElementById('customTrack');
-  const musicBtn=document.getElementById('audioToggle');
-  let musicArmed=false, musicPlaying=false;
-  function tryPlay(){
-    music.play().then(()=>{musicPlaying=true; music.volume=.85; musicBtn.textContent='🎵 Music: On';}).catch(()=>{});
-  }
-  const arm=()=>{ if(!musicArmed){ musicArmed=true; tryPlay(); } };
-  window.addEventListener('pointerdown', arm, { once:true });
-  window.addEventListener('touchstart', arm, { once:true });
-  document.addEventListener('keydown', arm, { once:true });
-  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible' && musicArmed && !musicPlaying){ tryPlay(); }});
-  musicBtn.addEventListener('click',()=>{ if(!musicArmed){ musicArmed=true; tryPlay(); return; } if(musicPlaying){ music.pause(); musicPlaying=false; musicBtn.textContent='🎵 Music: Off'; } else { tryPlay(); }});
-
-  // ========== THREE.JS WORLD ==========
-  const canvas=document.getElementById('world');
-  const renderer=new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x000000, 0); // transparent
-  const scene=new THREE.Scene();
-  const camera=new THREE.PerspectiveCamera(58, innerWidth/innerHeight, 0.1, 4000);
-  camera.position.set(0, 2.0, 8.5);
-  function onResize(){ renderer.setSize(innerWidth, innerHeight, false); camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); }
-  addEventListener('resize', onResize); onResize();
-
-  const hemi=new THREE.HemisphereLight(0xffffff, 0x202233, 0.7); scene.add(hemi);
-  const loader=new THREE.TextureLoader(); loader.colorSpace=THREE.SRGBColorSpace;
-
-  const CDN={
-    sakura:{
-      sky:'https://images.unsplash.com/photo-1492447273231-0f8fecec1e59?q=80&w=2400&auto=format&fit=crop',
-      mid:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2400&auto=format&fit=crop',
-      front:'https://images.unsplash.com/photo-1520975942284-7b6835eedcb0?q=80&w=2400&auto=format&fit=crop',
-      petal:'https://upload.wikimedia.org/wikipedia/commons/5/50/White_circle.svg'
-    },
-    neon:{
-      sky:'https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=2400&auto=format&fit=crop',
-      mid:'https://images.unsplash.com/photo-1508057198894-247b23fe5ade?q=80&w=2400&auto=format&fit=crop',
-      front:'https://images.unsplash.com/photo-1501769214405-5e86c1f7b0a0?q=80&w=2400&auto=format&fit=crop',
-      glow:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Blue_circle.png/240px-Blue_circle.png'
-    },
-    sunset:{
-      sky:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop',
-      mid:'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2400&auto=format&fit=crop',
-      front:'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=2400&auto=format&fit=crop',
-      firefly:'https://upload.wikimedia.org/wikipedia/commons/1/1f/Disc_Plain_yellow.svg'
+  // ========== MUSIC ==========
+  const music = document.getElementById('customTrack');
+  const musicBtn = document.getElementById('audioToggle');
+  let musicPlaying = false;
+  let musicInitialized = false;
+  
+  // Function to initialize and play music
+  function initializeMusic() {
+    if (!musicInitialized) {
+      musicInitialized = true;
+      
+      // Try to play the music
+      const playPromise = music.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          musicPlaying = true;
+          music.volume = 0.85;
+          musicBtn.textContent = '🎵 Music: On';
+        }).catch(error => {
+          console.log("Audio play failed:", error);
+          musicBtn.textContent = '🎵 Music: Click to Start';
+        });
+      }
     }
-  };
-
-  // oversize plane layer that always fills view
-  function layer(url, depth){
-    const mat=new THREE.MeshBasicMaterial({transparent:true});
-    const geo=new THREE.PlaneGeometry(42, 24); // bigger than viewport to avoid borders
-    const m=new THREE.Mesh(geo, mat); m.position.set(0,0,depth);
-    loader.load(url, (tex)=>{ tex.wrapS=tex.wrapT=THREE.ClampToEdgeWrapping; mat.map=tex; mat.needsUpdate=true; });
-    return m;
   }
-
-  function pointCloud(url, count, size, area, zMin=-8, zVar=18){
-    const tex=loader.load(url); tex.colorSpace=THREE.SRGBColorSpace;
-    const geo=new THREE.BufferGeometry(); const pos=new Float32Array(count*3);
-    for(let i=0;i<count;i++){ pos[i*3]=(Math.random()-.5)*area; pos[i*3+1]=Math.random()*area*.6; pos[i*3+2]=zMin - Math.random()*zVar; }
-    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-    const mat=new THREE.PointsMaterial({map:tex, transparent:true, size, alphaTest:.05, depthWrite:false});
-    return new THREE.Points(geo,mat);
+  
+  // Function to toggle music
+  function toggleMusic() {
+    if (!musicInitialized) {
+      initializeMusic();
+      return;
+    }
+    
+    if (!musicPlaying) {
+      // Try to play the music
+      const playPromise = music.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          musicPlaying = true;
+          music.volume = 0.85;
+          musicBtn.textContent = '🎵 Music: On';
+        }).catch(error => {
+          console.log("Audio play failed:", error);
+        });
+      }
+    } else {
+      // Pause the music
+      music.pause();
+      musicPlaying = false;
+      musicBtn.textContent = '🎵 Music: Off';
+    }
   }
-
-  function sprite(url, n, size, area, zMin=-9, zVar=16){ const g=new THREE.Group(); for(let i=0;i<n;i++){ const s=new THREE.Sprite(new THREE.SpriteMaterial({transparent:true,opacity:.85})); loader.load(url,(t)=>{s.material.map=t;s.material.needsUpdate=true;}); s.scale.set(size,size,1); s.position.set((Math.random()-.5)*area, -0.2+Math.random()*2.6, zMin-Math.random()*zVar); s.userData.w=Math.random()*Math.PI*2; g.add(s);} return g; }
-
-  // Scene groups
-  const sakura=new THREE.Group();
-  sakura.add(layer(CDN.sakura.sky,-28));
-  sakura.add(layer(CDN.sakura.mid,-22));
-  sakura.add(layer(CDN.sakura.front,-16));
-  sakura.add(pointCloud(CDN.sakura.petal,1200,.16,36));
-
-  const neon=new THREE.Group();
-  neon.add(layer(CDN.neon.sky,-28));
-  neon.add(layer(CDN.neon.mid,-22));
-  neon.add(layer(CDN.neon.front,-16));
-  neon.add(sprite(CDN.neon.glow,52,1.2,30));
-
-  const sunset=new THREE.Group();
-  sunset.add(layer(CDN.sunset.sky,-28));
-  sunset.add(layer(CDN.sunset.mid,-22));
-  sunset.add(layer(CDN.sunset.front,-16));
-  sunset.add(sprite(CDN.sunset.firefly,78,.28,32));
-
-  scene.add(sakura,neon,sunset); neon.visible=false; sunset.visible=false;
-
-  // switching
-  const fade=document.getElementById('fade');
-  const switchBtn=document.getElementById('switchStyle');
-  const modes=['sakura','neon','sunset'];
-  let modeIndex=0; let lastSwitch=performance.now();
-  function setMode(i){ modeIndex=(i+3)%3; sakura.visible=(modeIndex===0); neon.visible=(modeIndex===1); sunset.visible=(modeIndex===2); }
-  function fadeTo(nextIdx){ fade.style.opacity='1'; setTimeout(()=>{ setMode(nextIdx); fade.style.opacity='0'; },380); }
-  switchBtn.addEventListener('click',()=>{ fadeTo(modeIndex+1); lastSwitch=performance.now(); });
-
-  // animation loop
-  let tmx=0, tmy=0; let prev=performance.now();
-  function loop(now){ const dt=(now-prev)/1000; prev=now;
-    if(now-lastSwitch>10000){ fadeTo(modeIndex+1); lastSwitch=now; }
-
-    // parallax camera
-    camera.rotation.x += (tmy - camera.rotation.x)*0.06;
-    camera.rotation.y += (tmx - camera.rotation.y)*0.06;
-
-    // blossom fall
-    sakura.traverse(o=>{ if(o.isPoints){ const a=o.geometry.attributes.position; for(let i=0;i<a.count;i++){ let y=a.getY(i)-0.022; if(y<-3){ y=Math.random()*8; a.setX(i,(Math.random()-.5)*36); a.setZ(i,-8-Math.random()*18);} a.setY(i,y);} a.needsUpdate=true; }});
-    // neon flicker
-    neon.children.forEach(ch=>{ if(ch.type==='Sprite'){ ch.material.opacity=0.55+Math.sin(now*0.002+ch.id%7)*0.25; }});
-    // fireflies
-    sunset.children.forEach(ch=>{ if(ch.type==='Sprite'){ ch.position.x+=Math.sin(now*0.001+ch.userData.w)*0.004; ch.position.y+=Math.cos(now*0.0012+ch.userData.w)*0.003; }});
-
-    renderer.render(scene,camera);
-    requestAnimationFrame(loop);
+  
+  // Add click event to music button
+  musicBtn.addEventListener('click', toggleMusic);
+  
+  // ========== INTRO HANDLING ==========
+  const intro = document.getElementById('intro');
+  
+  function hideIntro() {
+    if (intro) {
+      intro.style.opacity = '0';
+      setTimeout(() => {
+        intro.style.display = 'none';
+      }, 500);
+    }
+    
+    // Initialize music when intro is dismissed
+    initializeMusic();
   }
-
-  // mouse parallax
-  addEventListener('mousemove',e=>{ tmx = -(e.clientX/innerWidth-0.5)*0.12; tmy = -(e.clientY/innerHeight-0.5)*0.07; });
-
-  setMode(0); requestAnimationFrame(loop);
-
-  // hide intro after a short moment
-  setTimeout(()=>{ const intro=document.getElementById('intro'); if(intro) intro.style.display='none'; }, 2200);
+  
+  // Add click event to intro
+  if (intro) {
+    intro.addEventListener('click', hideIntro);
+  }
+  
+  // Hide intro after 5 seconds automatically
+  setTimeout(hideIntro, 5000);
+  
+  // ========== BACKGROUND SCENES ==========
+  const scenes = document.querySelectorAll('.scene');
+  let currentSceneIndex = 0;
+  
+  // Function to switch scenes
+  function switchScene() {
+    // Hide current scene
+    scenes[currentSceneIndex].classList.remove('active');
+    
+    // Move to next scene
+    currentSceneIndex = (currentSceneIndex + 1) % scenes.length;
+    
+    // Show new scene
+    scenes[currentSceneIndex].classList.add('active');
+    
+    // Update particles for new scene
+    createParticles();
+  }
+  
+  // Add click event to scene switch button
+  document.getElementById('switchStyle').addEventListener('click', switchScene);
+  
+  // Auto-switch scenes every 10 seconds
+  setInterval(switchScene, 10000);
+  
+  // ========== PARTICLES ==========
+  function createParticles() {
+    // Clear existing particles
+    document.querySelectorAll('.particle').forEach(particle => {
+      particle.remove();
+    });
+    
+    // Get current scene type
+    const currentScene = scenes[currentSceneIndex].id;
+    const particleContainer = document.getElementById(`${currentScene}-particles`);
+    
+    // Create particles based on scene type
+    let particleCount, particleClass, particleSize;
+    
+    if (currentScene === 'sakura-scene') {
+      particleCount = 80;
+      particleClass = 'sakura-particle';
+      particleSize = '5px';
+    } else if (currentScene === 'neon-scene') {
+      particleCount = 60;
+      particleClass = 'neon-particle';
+      particleSize = '8px';
+    } else if (currentScene === 'sunset-scene') {
+      particleCount = 100;
+      particleClass = 'sunset-particle';
+      particleSize = '3px';
+    }
+    
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle', particleClass);
+      
+      // Random position
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+      
+      // Random animation delay and duration
+      const delay = Math.random() * 10;
+      const duration = 15 + Math.random() * 20;
+      
+      // Set particle properties
+      particle.style.left = `${left}%`;
+      particle.style.top = `${top}%`;
+      particle.style.width = particleSize;
+      particle.style.height = particleSize;
+      particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+      
+      // Add to container
+      particleContainer.appendChild(particle);
+    }
+  }
+  
+  // CSS for particle animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translateY(-20px) translateX(10px) rotate(90deg);
+      }
+      50% {
+        transform: translateY(-40px) translateX(0) rotate(180deg);
+        opacity: 0.8;
+      }
+      75% {
+        transform: translateY(-20px) translateX(-10px) rotate(270deg);
+      }
+      100% {
+        transform: translateY(0) translateX(0) rotate(360deg);
+        opacity: 1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // Initialize particles
+  createParticles();
   </script>
 </body>
 </html>
