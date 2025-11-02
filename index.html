@@ -687,7 +687,9 @@
 
   <!-- Audio element -->
   <audio id="customTrack" loop>
-    <source src="https://raw.githubusercontent.com/Ahmedzikoo1995/static/blob/main/soft%20engineer.mp3" type="audio/mpeg">
+    <source src="https://raw.githubusercontent.com/Ahmedzikoo1995/static/refs/heads/main/soft%20engineer.mp3" type="audio/mpeg">
+    <!-- Fallback audio source -->
+    <source src="https://raw.githubusercontent.com/Ahmedzikoo1995/static/main/soft%20engineer.mp3" type="audio/mpeg">
   </audio>
 
   <script>
@@ -700,32 +702,52 @@
   const musicBtn = document.getElementById('audioToggle');
   let musicPlaying = true;
 
-  // Start music immediately
+  // Improved music start function
   function startMusic() {
+    if (!music) {
+      console.error("Audio element not found");
+      return;
+    }
+    
     music.volume = 0.7;
+    
+    // Create a user interaction handler
+    const startOnInteraction = () => {
+      if (!musicPlaying) {
+        music.play().then(() => {
+          musicPlaying = true;
+          musicBtn.textContent = '🎵 Music: On';
+          console.log("Music started successfully");
+          document.removeEventListener('click', startOnInteraction);
+          document.removeEventListener('keydown', startOnInteraction);
+          document.removeEventListener('scroll', startOnInteraction);
+        }).catch(error => {
+          console.log("Music play failed:", error);
+          musicBtn.textContent = '🎵 Music: Error';
+        });
+      }
+    };
+
+    // Try to play immediately
     music.play().then(() => {
       musicPlaying = true;
       musicBtn.textContent = '🎵 Music: On';
       console.log("Music started successfully");
     }).catch(error => {
-      console.log("Autoplay blocked, will start on user interaction");
+      console.log("Autoplay blocked, waiting for user interaction");
       musicBtn.textContent = '🎵 Music: Click to Start';
       musicPlaying = false;
       
-      // Start on any user interaction
-      const startOnInteraction = () => {
-        if (!musicPlaying) {
-          music.play().then(() => {
-            musicPlaying = true;
-            musicBtn.textContent = '🎵 Music: On';
-            document.removeEventListener('click', startOnInteraction);
-            document.removeEventListener('keydown', startOnInteraction);
-          });
-        }
-      };
-      
+      // Add event listeners for user interaction
       document.addEventListener('click', startOnInteraction);
       document.addEventListener('keydown', startOnInteraction);
+      document.addEventListener('scroll', startOnInteraction);
+      
+      // Also try to start when the audio toggle button is clicked
+      musicBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        startOnInteraction();
+      });
     });
   }
 
@@ -737,6 +759,8 @@
 
   // Toggle music function
   function toggleMusic() {
+    if (!music) return;
+    
     if (musicPlaying) {
       music.pause();
       musicPlaying = false;
@@ -745,6 +769,9 @@
       music.play().then(() => {
         musicPlaying = true;
         musicBtn.textContent = '🎵 Music: On';
+      }).catch(error => {
+        console.log("Failed to play music:", error);
+        musicBtn.textContent = '🎵 Music: Error';
       });
     }
   }
