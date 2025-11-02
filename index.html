@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Khaled Ahmed — Senior Embedded Software Validation Engineer</title>
+  <meta name="description" content="Khaled Ahmed · Senior Embedded Software Validation Engineer — Portfolio with animated background, music, and complete professional experience.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg:#07080f; --fg:#f7f7ff; --muted:#b2b8c6; --card:rgba(16,18,26,.85); --line:#24283b; --accent:#b388ff; --accent2:#ff5fa2;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial;scroll-behavior:smooth;}
+    a{color:inherit;text-decoration:none}
+
+    /* ======== FULLSCREEN BACKGROUND ======== */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .scene {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .scene.active {
+      opacity: 1;
+    }
+    
+    #sakura-scene {
+      background: linear-gradient(rgba(7, 8, 15, 0.7), rgba(7, 8, 15, 0.7)), 
+                  url('https://images.unsplash.com/photo-1492447273231-0f8fecec1e59?q=80&w=2400&auto=format&fit=crop');
+    }
+    
+    #neon-scene {
+      background: linear-gradient(rgba(7, 8, 15, 0.7), rgba(7, 8, 15, 0.7)), 
+                  url('https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=2400&auto=format&fit=crop');
+    }
+    
+    #sunset-scene {
+      background: linear-gradient(rgba(7, 8, 15, 0.7), rgba(7, 8, 15, 0.7)), 
+                  url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop');
+    }
+    
+    #cyber-scene {
+      background: linear-gradient(rgba(7, 8, 15, 0.7), rgba(7, 8, 15, 0.7)), 
+                  url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2400&auto=format&fit=crop');
+    }
+    
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    
+    .sakura-particle {
+      background: #ffb7c5;
+      box-shadow: 0 0 10px #ffb7c5;
+    }
+    
+    .neon-particle {
+      background: #5fa2ff;
+      box-shadow: 0 0 15px #5fa2ff;
+    }
+    
+    .sunset-particle {
+      background: #ffaa5f;
+      box-shadow: 0 0 8px #ffaa5f;
+    }
+    
+    .cyber-particle {
+      background: #00ff88;
+      box-shadow: 0 0 12px #00ff88;
+    }
+
+    /* ======== MAIN CONTENT ======== */
+    .main-content {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
+
+    /* ======== HEADER / NAV ======== */
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:linear-gradient(to bottom, rgba(7,8,15,.9), rgba(7,8,15,.35), rgba(7,8,15,0));
+      backdrop-filter:saturate(140%) blur(6px);
+      animation: slideDown 0.8s ease;
+      transition: all 0.3s ease;
+    }
+    
+    header.scrolled {
+      background: rgba(7,8,15,.95);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    }
+    
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:800}
+    .logo{width:36px;height:36px;border-radius:12px;background:radial-gradient(120px 80px at 30% 30%, var(--accent), transparent),radial-gradient(120px 80px at 70% 70%, var(--accent2), transparent); animation: rotate 10s linear infinite;}
+    .links a{margin:0 8px;padding:8px 10px;border-radius:10px;color:#cbd1df; transition: all 0.3s ease;}
+    .links a:hover{background:rgba(255,255,255,.08);color:#fff; transform: translateY(-2px);}
+    .btn{border:1px solid var(--line);background:var(--card);color:#fff;padding:10px 14px;border-radius:14px;cursor:pointer;transition: all 0.3s ease;}
+    .btn:hover {transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3);}
+
+    /* ======== HERO ======== */
+    #hero{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      animation: fadeIn 1.2s ease;
+      padding: 20px 0;
+    }
+    .grid{display:grid;gap:22px;grid-template-columns:1.1fr .9fr}
+    @media (max-width:1000px){.grid{grid-template-columns:1fr}}
+    .chip{display:inline-block;border:1px dashed var(--line);border-radius:30px;padding:8px 12px;color:#cbd1df; animation: pulse 2s infinite;}
+    .title{font-size:clamp(36px,5vw,66px);margin:8px 0 6px; animation: slideUp 1s ease;}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.45);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 0.8s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    }
+
+    /* ======== SECTIONS ======== */
+    section{
+      padding:80px 0;
+      border-top:1px solid var(--line);
+      opacity: 1;
+      transform: translateY(0);
+    }
+    h2{
+      margin:0 0 14px;
+      position: relative;
+      display: inline-block;
+    }
+    h2:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(to right, var(--accent), var(--accent2));
+      border-radius: 3px;
+    }
+    .pills{display:flex;flex-wrap:wrap;gap:10px}
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.12);
+      border-radius:999px;
+      padding:8px 14px;
+      white-space:nowrap;
+      transition: all 0.3s ease;
+    }
+    .pill:hover {
+      background: rgba(179, 136, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* ======== ANIMATIONS ======== */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translateY(-20px) translateX(10px) rotate(90deg);
+      }
+      50% {
+        transform: translateY(-40px) translateX(0) rotate(180deg);
+        opacity: 0.8;
+      }
+      75% {
+        transform: translateY(-20px) translateX(-10px) rotate(270deg);
+      }
+      100% {
+        transform: translateY(0) translateX(0) rotate(360deg);
+        opacity: 1;
+      }
+    }
+
+    /* ======== CODE VISUAL STYLE ======== */
+    .code-terminal {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0, 10, 20, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      margin: 15px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .terminal-title {
+      color: var(--accent);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .terminal-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .terminal-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .close { background: #ff5f57; }
+    .minimize { background: #ffbd2e; }
+    .maximize { background: #28ca42; }
+
+    .code-line {
+      margin: 8px 0;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .prompt {
+      color: var(--accent2);
+      margin-right: 10px;
+    }
+
+    .command {
+      color: var(--fg);
+    }
+
+    .output {
+      color: #82aaff;
+      margin-left: 20px;
+    }
+
+    .comment {
+      color: #637777;
+      font-style: italic;
+    }
+
+    .highlight {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .blink {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ======== EXPERIENCE STYLING ======== */
+    .experience-item {
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--line);
+      transition: all 0.3s ease;
+    }
+
+    .experience-item:hover {
+      transform: translateX(5px);
+    }
+
+    .experience-item:last-child {
+      border-bottom: none;
+    }
+
+    .experience-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .company {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 1.2em;
+    }
+
+    .date {
+      color: var(--muted);
+      font-size: 0.9em;
+      background: rgba(179, 136, 255, 0.1);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    /* ======== CONTACT LINKS ======== */
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 15px;
+      background: var(--card);
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      transition: all 0.3s ease;
+    }
+
+    .contact-link:hover {
+      background: rgba(179, 136, 255, 0.1);
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Container -->
+  <div class="background-container">
+    <div id="sakura-scene" class="scene active">
+      <div class="particles" id="sakura-particles"></div>
+    </div>
+    <div id="neon-scene" class="scene">
+      <div class="particles" id="neon-particles"></div>
+    </div>
+    <div id="sunset-scene" class="scene">
+      <div class="particles" id="sunset-particles"></div>
+    </div>
+    <div id="cyber-scene" class="scene">
+      <div class="particles" id="cyber-particles"></div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav>
+          <div class="brand"><div class="logo"></div><span>Khaled Ahmed • Embedded Systems</span></div>
+          <div class="links">
+            <a href="#hero">Home</a>
+            <a href="#experience">Experience</a>
+            <a href="#skills">Skills</a>
+            <a href="#contact">Contact</a>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <button class="btn" id="switchStyle">🌗 Switch Scene</button>
+            <button class="btn" id="audioToggle">🎵 Music: On</button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section id="hero">
+      <div class="container grid">
+        <div>
+          <div class="chip">✨ Senior Embedded Software Validation Engineer</div>
+          <h1 class="title">Khaled Ahmed</h1>
+          <p style="opacity:.9; font-size: 1.2em;">HIL · SOME/IP · DoIP · UDS · Python · CAPL · Vector CANoe</p>
+          <p style="opacity:.8; margin-top: 15px;">Test & Validation Engineer with ~5 years in embedded HIL testing, automation, and diagnostics. Expert in automated validation of embedded software and communication protocols.</p>
+          
+          <!-- Hero Terminal -->
+          <div class="code-terminal">
+            <div class="terminal-header">
+              <div class="terminal-title">
+                <i class="fas fa-terminal"></i>
+                system@portfolio:~ 
+              </div>
+              <div class="terminal-buttons">
+                <div class="terminal-btn close"></div>
+                <div class="terminal-btn minimize"></div>
+                <div class="terminal-btn maximize"></div>
+              </div>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">whoami</span>
+            </div>
+            <div class="code-line">
+              <span class="output">Senior Embedded Software Validation Engineer</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">cat specialties.txt</span>
+            </div>
+            <div class="code-line">
+              <span class="output">HIL Testing • SOME/IP • DoIP • UDS • Python • CAPL</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command blink">_</span>
+            </div>
+          </div>
+          
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+            <a class="btn" href="#experience">View Experience</a>
+            <a class="btn" href="#contact">Contact Me</a>
+            <a class="btn" href="https://linkedin.com/in/khaled-ahmed-b157421b2" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+        </div>
+        <div class="card">
+          <img id="avatar2D" src="https://cdn.jsdelivr.net/gh/Ahmedzikoo1995/static@main/avatar_hero.png" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1535905557558-afc4877a26fc?q=80&w=800&auto=format&fit=crop'" alt="Khaled Ahmed" style="display:block;width:100%;max-width:360px;border-radius:18px;margin:0 auto"/>
+          <p style="opacity:.8;margin:10px 0 0;text-align:center">Senior Embedded Software Validation Engineer</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience">
+      <div class="container">
+        <h2><i class="fas fa-briefcase"></i> Professional Experience</h2>
+        
+        <!-- Italdesign Experience -->
+        <div class="experience-item card">
+          <div class="experience-header">
+            <h3>Automotive Test Engineer</h3>
+            <div class="date">Jun 2023 - Present</div>
+          </div>
+          <div class="company">Italdesign | Italy</div>
+          
+          <div class="code-terminal">
+            <div class="terminal-header">
+              <div class="terminal-title">
+                <i class="fas fa-network-wired"></i>
+                protocol_validation@italdesign
+              </div>
+              <div class="terminal-buttons">
+                <div class="terminal-btn close"></div>
+                <div class="terminal-btn minimize"></div>
+                <div class="terminal-btn maximize"></div>
+              </div>
+            </div>
+            <div class="code-line"><span class="prompt">></span><span class="command">SOME/IP Validation:</span> <span class="output">DoIP • TCP • UDP protocols</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Tools:</span> <span class="output">Python (ENNA) + Vector CANoe</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Traceability:</span> <span class="output">Codebeamer bidirectional mapping</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Agile Workflow:</span> <span class="output">JIRA tickets + Root cause analysis</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Android Integration:</span> <span class="output">ADB shell commands + Device management</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Reporting:</span> <span class="output">Automated pipelines → SharePoint/Codebeamer</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">HIL Management:</span> <span class="output">CAN/Ethernet TCP + Fault resilience</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Diagnostics:</span> <span class="output">UDS + ECU flashing + Climate chamber testing</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Infrastructure:</span> <span class="output">Vector migration + Blocked tests resurrection</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Tools Development:</span> <span class="output">GUI analysis acceleration</span></div>
+          </div>
+        </div>
+
+        <!-- Marquardt Experience -->
+        <div class="experience-item card">
+          <div class="experience-header">
+            <h3>Functional Software Test Engineer</h3>
+            <div class="date">Apr 2021 - Jun 2023</div>
+          </div>
+          <div class="company">Marquardt Group | Tunisia</div>
+          
+          <div class="code-terminal">
+            <div class="terminal-header">
+              <div class="terminal-title">
+                <i class="fas fa-microchip"></i>
+                hil_validation@marquardt
+              </div>
+              <div class="terminal-buttons">
+                <div class="terminal-btn close"></div>
+                <div class="terminal-btn minimize"></div>
+                <div class="terminal-btn maximize"></div>
+              </div>
+            </div>
+            <div class="code-line"><span class="prompt">></span><span class="command">HIL Benches:</span> <span class="output">VT System + IBB configuration</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Tools:</span> <span class="output">Vector CANoe + vTESTstudio</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">PCB Testing:</span> <span class="output">Voltage/current + LED + Signal integrity</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Custom Hardware:</span> <span class="output">Test boxes + Electronic circuits design</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">UDS Diagnostics:</span> <span class="output">Security access + DTC + ECU reset</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">ECU Flashing:</span> <span class="output">VFlash + Lauterbach + TestBenchClient</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Requirements:</span> <span class="output">IBM DOORS analysis + Coverage tracking</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Team Training:</span> <span class="output">Onboarding acceleration (3→1 month)</span></div>
+            <div class="code-line"><span class="prompt">></span><span class="command">Optimization:</span> <span class="output">HIL availability +25% + Library organization</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills">
+      <div class="container">
+        <h2><i class="fas fa-cogs"></i> Technical Skills</h2>
+        
+        <div class="card">
+          <div class="code-terminal">
+            <div class="terminal-header">
+              <div class="terminal-title">
+                <i class="fas fa-laptop-code"></i>
+                skills_matrix@system
+              </div>
+              <div class="terminal-buttons">
+                <div class="terminal-btn close"></div>
+                <div class="terminal-btn minimize"></div>
+                <div class="terminal-btn maximize"></div>
+              </div>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">Protocols:</span>
+              <span class="output">CAN • LIN • Ethernet • SOME/IP • DoIP • UDS</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">Languages:</span>
+              <span class="output">Python • CAPL • C/C++ • MATLAB • LabVIEW</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">Tools:</span>
+              <span class="output">Vector CANoe • vTESTstudio • CANalyzer • Codebeamer</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">ALM:</span>
+              <span class="output">IBM DOORS • JIRA • Git • SharePoint</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">Testing:</span>
+              <span class="output">HIL • VT System • IBB • VFlash • Lauterbach</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">Analysis:</span>
+              <span class="output">Wireshark • EsoTrace • MobiXtreme • Oscilloscope</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">$</span>
+              <span class="command">Certifications:</span>
+              <span class="output">ISTQB • ISO 26262</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="container">
+        <h2><i class="fas fa-envelope"></i> Contact Information</h2>
+        
+        <div class="card">
+          <div class="code-terminal">
+            <div class="terminal-header">
+              <div class="terminal-title">
+                <i class="fas fa-address-card"></i>
+                contact_info@portfolio
+              </div>
+              <div class="terminal-buttons">
+                <div class="terminal-btn close"></div>
+                <div class="terminal-btn minimize"></div>
+                <div class="terminal-btn maximize"></div>
+              </div>
+            </div>
+            <div class="code-line">
+              <span class="prompt">></span>
+              <span class="command">Email:</span>
+              <span class="output">khaled.ahmed@enis.tn</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">></span>
+              <span class="command">Phone:</span>
+              <span class="output">+39 3318039484</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">></span>
+              <span class="command">LinkedIn:</span>
+              <span class="output">linkedin.com/in/khaled-ahmed-b157421b2</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">></span>
+              <span class="command">Location:</span>
+              <span class="output">Moncalieri, Torino, Italy 10024</span>
+            </div>
+            <div class="code-line">
+              <span class="prompt">></span>
+              <span class="command">Status:</span>
+              <span class="output">Available for opportunities</span>
+            </div>
+          </div>
+          
+          <div class="contact-links">
+            <a class="contact-link" href="mailto:khaled.ahmed@enis.tn">
+              <i class="fas fa-envelope"></i> Email Me
+            </a>
+            <a class="contact-link" href="tel:+393318039484">
+              <i class="fas fa-phone"></i> Call Me
+            </a>
+            <a class="contact-link" target="_blank" rel="noopener" href="https://linkedin.com/in/khaled-ahmed-b157421b2">
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="padding:60px 0;text-align:center;color:#cbd1df">
+      <div class="container">
+        <p>© <span id="year"></span> Khaled Ahmed - Senior Embedded Software Validation Engineer</p>
+        <p style="margin-top: 10px; opacity: 0.7;">Innovating automotive validation through embedded systems expertise</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Audio element -->
+  <audio id="customTrack" loop>
+    <source src="https://raw.githubusercontent.com/Ahmedzikoo1995/static/main/soft%20engineer%20.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+  // ========== YEAR ==========
+  const yearEl = document.getElementById('year'); 
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // ========== IMMEDIATE MUSIC START ==========
+  const music = document.getElementById('customTrack');
+  const musicBtn = document.getElementById('audioToggle');
+  let musicPlaying = true;
+
+  // Start music immediately
+  function startMusic() {
+    music.volume = 0.7;
+    music.play().then(() => {
+      musicPlaying = true;
+      musicBtn.textContent = '🎵 Music: On';
+      console.log("Music started successfully");
+    }).catch(error => {
+      console.log("Autoplay blocked, will start on user interaction");
+      musicBtn.textContent = '🎵 Music: Click to Start';
+      musicPlaying = false;
+      
+      // Start on any user interaction
+      const startOnInteraction = () => {
+        if (!musicPlaying) {
+          music.play().then(() => {
+            musicPlaying = true;
+            musicBtn.textContent = '🎵 Music: On';
+            document.removeEventListener('click', startOnInteraction);
+            document.removeEventListener('keydown', startOnInteraction);
+          });
+        }
+      };
+      
+      document.addEventListener('click', startOnInteraction);
+      document.addEventListener('keydown', startOnInteraction);
+    });
+  }
+
+  // Start music when page is ready
+  document.addEventListener('DOMContentLoaded', startMusic);
+
+  // Also try to start when window loads
+  window.addEventListener('load', startMusic);
+
+  // Toggle music function
+  function toggleMusic() {
+    if (musicPlaying) {
+      music.pause();
+      musicPlaying = false;
+      musicBtn.textContent = '🎵 Music: Off';
+    } else {
+      music.play().then(() => {
+        musicPlaying = true;
+        musicBtn.textContent = '🎵 Music: On';
+      });
+    }
+  }
+
+  musicBtn.addEventListener('click', toggleMusic);
+
+  // ========== BACKGROUND SCENES ==========
+  const scenes = document.querySelectorAll('.scene');
+  let currentSceneIndex = 0;
+  
+  function switchScene() {
+    scenes[currentSceneIndex].classList.remove('active');
+    currentSceneIndex = (currentSceneIndex + 1) % scenes.length;
+    scenes[currentSceneIndex].classList.add('active');
+    createParticles();
+  }
+  
+  document.getElementById('switchStyle').addEventListener('click', switchScene);
+  setInterval(switchScene, 8000);
+  
+  // ========== PARTICLES ==========
+  function createParticles() {
+    document.querySelectorAll('.particle').forEach(particle => particle.remove());
+    
+    const currentScene = scenes[currentSceneIndex].id;
+    const particleContainer = document.getElementById(`${currentScene}-particles`);
+    
+    let particleCount, particleClass, particleSize;
+    
+    if (currentScene === 'sakura-scene') {
+      particleCount = 80; particleClass = 'sakura-particle'; particleSize = '5px';
+    } else if (currentScene === 'neon-scene') {
+      particleCount = 60; particleClass = 'neon-particle'; particleSize = '8px';
+    } else if (currentScene === 'sunset-scene') {
+      particleCount = 100; particleClass = 'sunset-particle'; particleSize = '3px';
+    } else if (currentScene === 'cyber-scene') {
+      particleCount = 120; particleClass = 'cyber-particle'; particleSize = '4px';
+    }
+    
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle', particleClass);
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.top = `${Math.random() * 100}%`;
+      particle.style.width = particleSize;
+      particle.style.height = particleSize;
+      particle.style.animation = `float ${10 + Math.random() * 15}s linear ${Math.random() * 10}s infinite`;
+      particleContainer.appendChild(particle);
+    }
+  }
+  
+  createParticles();
+
+  console.log("Portfolio loaded successfully");
+  </script>
+</body>
+</html>
